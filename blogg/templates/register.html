@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎注册</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/mystyle.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form  novalidate action="/blogg/register/" method="post" class="form-horizontal" enctype="multipart/form-data">
+                {% csrf_token %}
+                {#  用户名#}
+                <div class="form-group">
+                    <label for="{{ regform.username.id_for_label }}"
+                           class="col-sm-2 control-label">{{ regform.username.label }}</label>
+                    <div class="col-sm-8">
+                        {{ regform.username }}
+                        <span class="help-block">{{ regform.username.errors.0 }}</span>
+                    </div>
+                </div>
+                {#  密码#}
+                <div class="form-group">
+                    <label for="{{ regform.password.id_for_label }}"
+                           class="col-sm-2 control-label">{{ regform.password.label }}</label>
+                    <div class="col-sm-8">
+                        {{ regform.password }}
+                        <span class="help-block">{{ regform.password.errors.0 }}</span>
+                    </div>
+                </div>
+                {#  确认密码#}
+                <div class="form-group">
+                    <label for="{{ regform.repwd.id_for_label }}"
+                           class="col-sm-2 control-label">{{ regform.repwd.label }}</label>
+                    <div class="col-sm-8">
+                        {{ regform.repwd }}
+                        <span class="help-block">{{ regform.repwd.errors.0}}</span>
+                    </div>
+                </div>
+                {#  邮箱#}
+                <div class="form-group">
+                    <label for="{{ regform.email.id_for_label }}"
+                           class="col-sm-2 control-label">{{ regform.email.label }}</label>
+                    <div class="col-sm-8">
+                        {{ regform.email }}
+                        <span class="help-block">{{ regform.email.errors.0 }}</span>
+                    </div>
+                </div>
+                {#  头像#}
+                <div class="form-group ">
+                    <label
+                           class="col-sm-2 control-label">头像</label>
+                    <div class="col-sm-8">
+                        <label for="id_avatar"><img id="avatar-img"  src="/static/img/nan1.jpg" alt=""></label>
+                        <input type="file" name="avatar" id="id_avatar" style="display: none;">
+                        <span class="help-block">{{ regform.username.errors.0 }}</span>
+                    </div>
+                </div>
+                {#  注册按钮#}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-8">
+                        <button type="button" class="btn btn-success" id="submit">注册</button>
+                        <a href="/blogg/login/" class="btn btn-success" >登录</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    {#  显示上传的图片  #}
+    $('#id_avatar').change(function () {
+        {#  创建一个读文件的对象#}
+        var fileReader =  new FileReader()
+        {# 读取文件 #}
+        fileReader.readAsDataURL(this.files[0])
+        {# 因为是从本地读取文件，可能加载不出来程序就过去了，所以使用onload #}
+        fileReader.onload=function () {
+            {# 将读取到的文件添加到img的src中 #}
+            $('#avatar-img').attr('src',fileReader.result)
+        }
+    })
+
+    // 添加点击事件，将要提交的数据以ajax方式提交到后台进行处理
+    $('#submit').click(function () {
+        // 获取填入的值
+        //var username = $('#id_username').val()
+        //var password = $('#id_password').val()
+        //var repwd = $('#id_repwd').val()
+        //var email = $('#id_email').val()
+
+        var formdata = new FormData();
+        formdata.append('username',$('#id_username').val());
+        formdata.append('password',$('#id_password').val());
+        formdata.append('repwd',$('#id_repwd').val());
+        formdata.append('email',$('#id_email').val());
+        formdata.append('avatar',$('#id_avatar')[0].files[0]);
+        formdata.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']").val());
+
+        //发送ajax请求，以post请求发送到注册函数
+        $.ajax( {
+            url:'/blogg/register/',
+            type:'post',
+            data:formdata,
+{#            mimeType: "multipart/form-data",#}
+            processData:false,
+            contentType:false,
+            success:function(data){
+                if (data.status){
+                    // 返回结果是有错误时 显示错误信息
+                    $.each(data.msg,function (k,v) {
+                        $('#id_'+k).next('span').text(v[0]).parent().parent().addClass('has-error')
+                    })
+                }else {
+                    //正确的时候跳转到登录页面
+                    console.log(data.msg)
+
+                    location.href = data.msg
+                }
+            }
+
+        })
+
+        $('form input').focus(function () {
+            $(this).next().text('').parent().parent().removeClass('has-error')
+        })
+
+    })
+
+</script>
+</body>
+</html>

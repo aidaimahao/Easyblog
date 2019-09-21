@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}个人博客</title>
+    <link rel="stylesheet" href="/static/mystyle.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/fontawesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/theme/{{ user_blog.theme }}">
+</head>
+<body>
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<div class="header">
+    <p id="userinfo">添加文章</p>
+</div>
+
+<div class="container">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+        {% block main %}
+            <form action="" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="">文章标题</label>
+                <input type="text" name="title" class="form-control" style="width: 300px">
+            </div><br><br>
+            <div>
+                <label for="">
+                    文章内容
+                </label> <br>
+                <textarea name="content" id="textarea" cols="60" rows="20"></textarea>
+            </div>
+                <br>
+                <input type="submit" class="btn btn-primary" value="提交">
+            </form>
+
+        {% endblock %}
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<script charset="utf-8" src="/static/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/static/kindeditor/lang/zh-CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#textarea',{
+                    uploadJson:'/upload/',
+                     extraFileUploadParams : {
+                         csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                }
+
+                });
+        });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聪哥博客</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/mystyle.css">
+</head>
+<body>
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+<!--  导航栏开始  -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">CongBlog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.username %}
+                    <li><a href="#">{{ request.user.username }}</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">个人中心 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/blogg/home/{{ request.user.username }}/">我的博客</a></li>
+                            <li><a href="/blogg/backend/addarticle/">写博客</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/blogg/logout/">注销</a></li>
+                        </ul>
+                        {% else %}
+                    <li><a href="/blogg/login/">登录</a></li>
+                    <li><a href="/blogg/register/">注册</a></li>
+                {% endif %}
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<!--  导航栏结束  -->
+
+
+<!--  主内容开始  -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">类型位一</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">类型位二</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">类型位一</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">类型位二</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+
+        {% for article in articles %}
+            <div class="media panel panel-primary cotw">
+                <div class="media-left">
+                    <a href="/blogg/home/{{ article.user.username }}/">
+                        <img  style="width: 60px;height: 60px" class="media-object" src="/media/{{ article.user.avatar }}" alt="...">
+                        <span class="blogname" style="font-size: 20px">{{ article.user.username }}</span>
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" ><b> <a href="/blogg/{{ article.user.username }}/articleDtl/{{ article.pk }}/">{{ article.title }}</a></b>  </h4>
+                    <p style="color: gray"> {{ article.desc }} </p>
+
+                    <div class="littletag">
+
+                         <p  >
+                             <span class="time">{{ article.create_date|date:'H:m  Y-m-d' }}
+                             </span> <span class="glyphicon glyphicon-comment"> 评论（{{ article.comment_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-thumbs-up"> 点赞（{{ article.up_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-thumbs-down"> 踩（{{ article.down_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-eye-open"> 阅读数（{{ article.see_count }}）</span>
+
+                         </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">广告位一</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">广告位二</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">广告位一</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">广告位二</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  主内容结束 -->
+
+</body>
+</html>

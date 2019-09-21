@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% block main %}
+    {% autoescape off %}
+        {{ article.content|safe }}
+    {% endautoescape %}
+    <div id="div_digg">
+        <div class="diggit action">
+            <span class="diggnum" id="digg_count">{{ article.article.up_count }}</span>
+        </div>
+        <div class="buryit action">
+            <span class="burynum" id="bury_count">{{ article.article.down_count }}</span>
+        </div>
+        <div class="clear"></div>
+        <div class="diggword" id="digg_tips"></div>
+    </div>
+    <div class="info" username="{{ request.user.username }}"
+            article= "{{ article.article }}"
+
+    ></div>
+
+    {# 发表评论区 #}
+    <div class="comment-box">
+
+        <div class="comment-edit-box d-flex">
+            <a id="commentsedit"></a>
+            <div class="user-img">
+                <a href="#" target="_blank">
+                    <img class="show_loginbox" src="/static/img/tt.png">
+                </a>
+            </div>
+            <form id="commentform">
+                <input type="hidden" id="comment_replyId">
+                <textarea class="comment-content open" name="comment_content" id="textera_content"
+                          placeholder="想对作者说点什么"></textarea>
+                <div class="opt-box"> <!-- d-flex -->
+
+                    <input type="hidden" id="comment_replyId" name="comment_replyId">
+                    <input type="hidden" id="article_id" name="article_id" value="94760047">
+                    <input type="hidden" id="comment_userId" name="comment_userId" value="">
+                    <input type="hidden" id="commentId" name="commentId" value="">
+
+{#                    <div class="dropdown" id="myDrap">#}
+{#                        <a class="dropdown-face d-flex align-items-center" data-toggle="dropdown" role="button"#}
+{#                           aria-haspopup="true" aria-expanded="false">#}
+{#                            <div class="txt-selected text-truncate">添加代码片</div>#}
+{#                            <svg class="icon d-block" aria-hidden="true">#}
+{#                            </svg>#}
+{#                        </a>#}
+{#                        <ul class="dropdown-menu" id="commentCode" aria-labelledby="drop4">#}
+{#                            <li><a data-code="html">HTML/XML</a></li>#}
+{#                            <li><a data-code="objc">objective-c</a></li>#}
+{#                            <li><a data-code="ruby">Ruby</a></li>#}
+{#                            <li><a data-code="php">PHP</a></li>#}
+{#                            <li><a data-code="csharp">C</a></li>#}
+{#                            <li><a data-code="cpp">C++</a></li>#}
+{#                            <li><a data-code="javascript">JavaScript</a></li>#}
+{#                            <li><a data-code="python">Python</a></li>#}
+{#                            <li><a data-code="java">Java</a></li>#}
+{#                            <li><a data-code="css">CSS</a></li>#}
+{#                            <li><a data-code="sql">SQL</a></li>#}
+{#                            <li><a data-code="plain">其它</a></li>#}
+{#                        </ul>#}
+{#                    </div>#}
+                    <div class="right-box">
+                        <span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span>
+                        {#                        <input type="button" class="btn btn-sm btn-cancel d-none" value="取消回复">#}
+
+                    </div>
+                </div>
+            </form>
+            <button class=" btn-sm btn-red  " id="btnsut"> 发表评论</button>
+        </div>
+
+
+
+
+{#        显示评论树#}
+        <div class="comment_tree">
+
+        </div>
+
+
+
+        <hr>
+
+        {# 评论列表区 #}
+        <div class="comment-list-container">
+            <div class="comment-list-box" style="max-height: 129.6px;">
+                <ul class="comment-list">
+
+                    {% for comment in comment_List %}
+
+                        <li class="comment-line-box d-flex toline" data-commentid="10177671"
+                            data-replyname="qq_34361483"><a
+                                target="_blank" href="/blogg/home/{{ comment.user.username }}/"><img
+                                src="/media/{{ comment.user.avatar }}" alt="qq_34361483" class="avatar"></a>
+                            <div class="right-box ">
+                                <div class="info-box"><a target="_blank" href="https://me.csdn.net/qq_34361483"><span
+                                        class="name ">{{ comment.user }}：</span></a>
+                                    <span class="comment">{{ comment.content }}</span> <br>
+                                    <span class="date tosize"
+                                          title="2019-07-15 16:32:14">{{ comment.create_date }}</span>
+                                    <span class="floor-num tosize" style="color: #1b6d85">#{{ forloop.counter }}楼</span>
+                                    <span class="opt-box">
+                                    <a class="btn btn-link-blue btn-read-reply tosize" data-type="readreply">查看回复(3)</a>
+                                    <a class="btn btn-link-blue btn-report tosize" data-type="report">举报</a>
+                                    <a id="reply" class="btn btn-link-blue btn-reply tosize"
+                                       onclick="func_reply('{{ comment.user }}','{{ comment.pk }}')">回复</a>
+                                    </span>
+                                </div>
+                                <div class="comment-like " data-commentid="10177671">
+                                    <svg class="icon ">
+                                    </svg>
+                                    <span></span></div>
+                            </div>
+                        </li>
+
+
+                        {% for j in comment.comment_set.all %}
+                            {% if comment.nid == j.parent_comment_id %}
+                             <li class="replay-box" style="display: list-item;">
+                            <ul class="comment-list">
+                                <li class="comment-line-box d-flex">
+                                    <a target="_blank" href="#">
+                                        <img src="/media/{{ j.user.avatar }}/" class="avatar">
+                                    </a>
+                                    <div class="right-box ">
+                                        <div class="info-box">
+                                            <a target="_blank" href="#">
+                                                <span class="name mr-8">{{ request.user.username }}</span></a><span class="text">回复</span>
+                                            <span class="nick-name">{{  comment.user.username}}：</span>
+                                            <span class="comment">{{ j.content }}</span> <br>
+                                            <span class="date" title="2019-07-18 19:51:42">{{ j.create_date }}</span>
+                                            <span class="text">)</span>
+                                            <span class="opt-box">
+                                                <a class="btn btn-link-blue btn-report" data-type="report">举报</a>
+                                                <a class="btn btn-link-blue btn-reply" data-type="reply">回复</a>
+                                            </span>
+                                        </div>
+                                        <div class="comment-like " data-commentid="10201557">
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                            {% endif %}
+
+                        {% endfor %}
+
+
+
+
+
+
+
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% csrf_token %}
+    <script>
+        {# 点赞部分 #}
+        $('#div_digg .action').click(function () {
+            {# 设置一个标志位 判断是否登录。添加一个标签加上username属性标签 来判断#}
+            var tag = $('.info').attr('username')
+            $('#digg_tips').html('')
+            console.log('tag=========',tag)
+            if (tag) {                          {# 已经登录 #}
+                {# 向后台发送ajax请求，把点赞信息穿过去 #}
+                var is_up = $(this).hasClass('diggit')
+                var article_id = '{{ article.article.pk }}'
+                console.log(is_up, article_id)
+                $.ajax(
+                    {
+                        url: '/blogg/up_down/',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                            is_up: is_up,
+                            article_id: article_id
+                        },
+                        success: function (data) {
+                            console.log(data)
+                            if (data.status) {   {# 点赞或踩成功 #}
+                                if (is_up) {          {# 用户点了赞 #}
+                                    var v = $('#digg_count').text();
+                                    console.log(v);
+                                    v = parseInt(v) + 1;
+                                    console.log(v);
+                                    $('#digg_count').text(v);
+                                } else {             {# 用户点了踩 #}
+                                    var v = $('#bury_count').text();
+                                    v = parseInt(v) + 1;
+                                    $('#bury_count').text(v);
+
+                                }
+                            } else {               {# 进行第二次点，失败 #}
+                                if (data.first_action) {
+                                    $('#digg_tips').html('您已经点过赞了')
+                                } else {
+                                    $('#digg_tips').html('您已经踩过了')
+                                }
+                                {# 提示内容消失 #}
+                                setTimeout("$('#digg_tips').html('')", 1000)
+                            }
+                        }
+                    }
+                )
+            } else {   {# 未登录 #}
+                $('#digg_tips').append('<a href = "/blogg/login/">请登录</a>')
+            }
+        });
+        
+        
+        {# 显示评论树 #}
+        $.ajax(
+            {
+                url : '/blogg/comment_tree/'+'{{ article.pk }}/',
+                success:function (data) {
+                    console.log(data)
+                    var comment_tree = $('.comment_tree')
+                    $.each(data,function (index,comment_dict) {
+                        var s = '<div class = "comment_c" comment_id = '+comment_dict.pk+'><span class="s_content">'+comment_dict.content+'</span></div>'
+
+                        if(comment_dict.parent_comment){
+{#                   子评论         }#}
+                            console.log(11111)
+                            console.log(s)
+                            $('[comment_id='+comment_dict.parent_comment+']').append(s)
+                            console.log(333)
+                        }else{
+                            {# 根评论 #}
+                            comment_tree.append(s)
+                        }
+                    })
+                }
+            }
+        );
+        
+        
+        
+        
+        
+        
+        {# 评论部分 #}
+        var sign = ''
+        $('#btnsut').click(function () {
+            var content = $('#textera_content').val()
+            console.log('{{ comment_List.0.user.avatar }}')
+            var article_id = '{{ article.article.pk }}'
+            {# 根评论还是字评论标志 ,默认空为根评论#}
+            console.log("content=======", content)
+            if (sign) {
+                var index = content.indexOf('\n')
+                content = content.slice(index + 1)
+            }
+            $.ajax({
+                url: '/blogg/comment/',
+                type: 'post',
+                data: {
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                    content: content,
+                    article_id: article_id,
+                    sign: sign
+                },
+                success: function (data) {
+                    var user = '{{ request.user.username }}'
+                    var id = data.id
+                    console.log('usr==', user)
+                    var create_date = data.create_date
+                    var content = data.content
+                    var avatar = data.avatar
+                    console.log(data)
+                    var pa_content = data.pa_content
+                    var pa_name = data.pa_name
+                    var pa_createdate = data.pa_createdate
+                    var pa_avatar = data.pa_avatar
+
+                    console.log('==========', user, create_date, content, avatar)
+                    var comment_li = ' <li class="comment-line-box d-flex toline" data-commentid="10177671" data-replyname="qq_34361483"><a\n' +
+                        '                            target="_blank" href="/blogg/home/' + user + '/"><img\n' +
+                        '                            src="/media/' + avatar + '" alt="qq_34361483" class="avatar"></a>\n' +
+                        '                        <div class="right-box ">\n' +
+                        '                            <div class="info-box"><a target="_blank" href="https://me.csdn.net/qq_34361483"><span\n' +
+                        '                                    class="name ">' + user + '：</span></a>\n' +
+                        '                                    <span class="comment">' + content + '</span> <br>\n' +
+                        '                                    <span class="date tosize" title="2019-07-15 16:32:14">' + pa_createdate + '</span>\n' +
+                        '                                    <span class="floor-num tosize" style="color: #1b6d85">#{{ forloop.counter }}楼</span><span class="opt-box">\n' +
+                        '                                    <a class="btn btn-link-blue btn-read-reply tosize" data-type="readreply">查看回复(3)</a>\n' +
+                        '                                    <a class="btn btn-link-blue btn-report tosize" data-type="report">举报</a>\n' +
+                        '                                    <button id="reply" type="button" class="btn btn-link-blue btn-reply tosize" username=""  onclick="func_reply("{{ comment.user }}","{{ comment.pk }}")  >回复</button></span>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="comment-like " data-commentid="10177671">\n' +
+                        '                                <svg class="icon ">\n' +
+                        '                                </svg>\n' +
+                        '                                <span></span></div>\n' +
+                        '                        </div>\n' +
+                        '                    </li>'
+                    var child_comt = '<li class="replay-box" style="display: list-item;">\n' +
+                        '                            <ul class="comment-list">\n' +
+                        '                                <li class="comment-line-box d-flex">\n' +
+                        '                                    <a target="_blank" href="#">\n' +
+                        '                                        <img src="/media//" class="avatar">\n' +
+                        '                                    </a>\n' +
+                        '                                    <div class="right-box ">\n' +
+                        '                                        <div class="info-box">\n' +
+                        '                                            <a target="_blank" href="#">\n' +
+                        '                                                <span class="name mr-8">'+user+'</span></a><span class="text">回复</span>\n' +
+                        '                                            <span class="nick-name">'+pa_name+'：</span>\n' +
+                        '                                            <span class="comment">'+content+'</span> <br>\n' +
+                        '                                            <span class="date" title="2019-07-18 19:51:42">'+create_date+'{{ t }}</span>\n' +
+                        '                                            <span class="text">)</span>\n' +
+                        '                                            <span class="opt-box">\n' +
+                        '                                                <a class="btn btn-link-blue btn-report" data-type="report">举报</a>\n' +
+                        '                                                <a class="btn btn-link-blue btn-reply" data-type="reply">回复</a>\n' +
+                        '                                            </span>\n' +
+                        '                                        </div>\n' +
+                        '                                        <div class="comment-like " data-commentid="10201557">\n' +
+                        '                                        </div>\n' +
+                        '                                    </div>\n' +
+                        '                                </li>\n' +
+                        '                            </ul>\n' +
+                        '                        </li>'
+
+                    if (sign){
+{#                            $('.comment-line-box').append(child_comt)#}
+                            $(this).parent().append(child_comt)
+                        alert('fsdfsdfsd')
+                    }else {
+                        $('.comment-list').prepend(comment_li);
+                        console.log('sdfsdsdffd')
+                    }
+
+
+
+
+                    $('#textera_content').val('')
+                    sign = ''
+                }
+            })
+        });
+
+        {# 回复评论事件 #}
+
+        function func_reply(username, pid) {
+            $('#textera_content').focus();
+            var v = '@' + username + '\n';
+            $('#textera_content').val(v);
+            sign = pid;
+
+        }
+
+    </script>
+
+{% endblock %}
+
+
+

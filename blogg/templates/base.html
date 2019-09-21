@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}个人博客</title>
+    <link rel="stylesheet" href="/static/mystyle.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/fontawesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/theme/{{ user_blog.theme }}">
+</head>
+<body>
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<div class="header">
+    <p id="userinfo">{{ user_blog.title }}的个人空间</p>
+</div>
+
+<div class="container">
+    <div class="col-md-2">
+        {#    日历#}
+          <div class="panel panel-primary">
+                <div class="panel-body">
+                    {{ calendarshow }}
+                </div>
+          </div>
+        {#    文章分类#}
+          <div class="panel panel-primary">
+                <div class="panel-heading">文章分类</div>
+                <div class="panel-body">
+                   {% for cate in cate_list %}
+                   <p>{{ cate.category__title }}({{ cate.cate_count  }})</p>
+                   {% endfor %}
+                </div>
+          </div>
+        {#   标签分类   #}
+          <div class="panel panel-primary ">
+                <div class="panel-heading tag" style="background-color: sandybrown ;color: whitesmoke">标签分类</div>
+                <div class="panel-body">
+                {% if tag_list %}
+                     {% for tag in tag_list %}
+                       <p>{{ tag.title }}({{ tag.c  }})</p>
+                       {% endfor %}
+                {% else %}
+                    <p>无</p>
+                {% endif %}
+                </div>
+          </div>
+        {# 时间分类#}
+          <div class="panel panel-primary"style="color: whitesmoke;background-color: gray">
+                <div class="panel-heading timegroup" style="background-color: darkgray">时间分类</div>
+                <div class="panel-body">
+                   {% for time in time_group %}
+                   <p>{{ time.t }}发布({{  time.c }})</p>
+                   {% endfor %}
+                </div>
+          </div>
+    </div>
+    <div class="col-md-8">
+        {% block main %}
+        
+        {% endblock %}
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+</body>
+</html>

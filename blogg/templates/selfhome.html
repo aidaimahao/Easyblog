@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}个人博客</title>
+    <link rel="stylesheet" href="/static/mystyle.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/fontawesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/theme/{{ user_blog.theme }}">
+</head>
+<body>
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<div class="header">
+    <p>{{ user_blog.title }}的个人空间</p>
+</div>
+
+<div class="container">
+    <div class="col-md-2">
+        {#    日历#}
+          <div class="panel panel-primary">
+                <div class="panel-body">
+                    {{ calendarshow }}
+                </div>
+          </div>
+        {#    文章分类#}
+          <div class="panel panel-primary">
+                <div class="panel-heading">文章分类</div>
+                <div class="panel-body">
+                   {% for cate in cate_list %}
+                   <p>{{ cate.category__title }}({{ cate.cate_count  }})</p>
+                   {% endfor %}
+                </div>
+          </div>
+        {#   标签分类   #}
+          <div class="panel panel-primary ">
+                <div class="panel-heading tag" style="background-color: sandybrown ;color: whitesmoke">标签分类</div>
+                <div class="panel-body">
+                {% if tag_list %}
+                     {% for tag in tag_list %}
+                       <p>{{ tag.title }}({{ tag.c  }})</p>
+                       {% endfor %}
+                {% else %}
+                    <p>无</p>
+                {% endif %}
+                </div>
+          </div>
+        {# 时间分类#}
+          <div class="panel panel-primary"style="color: whitesmoke;background-color: gray">
+                <div class="panel-heading timegroup" style="background-color: darkgray">时间分类</div>
+                <div class="panel-body">
+                   {% for time in time_group %}
+                   <p>{{ time.t }}发布({{  time.c }})</p>
+                   {% endfor %}
+                </div>
+          </div>
+    </div>
+    <div class="col-md-8">
+        <!--个人博客-->
+        {% for article in articles %}
+            <div class="media panel panel-primary cotw">
+                <div class="media-left">
+                    <a href="/blogg/home/{{ article.user.username }}/">
+                        <img  style="width: 60px;height: 60px" class="media-object" src="/media/{{ article.user.avatar }}" alt="...">
+                        <span class="blogname" style="font-size: 20px">{{ article.user.username }}</span>
+                    </a>
+                </div>
+                <div class="media-body">
+
+                    <h4 class="media-heading" ><b> <a href="/blogg/{{ article.user.username }}/articleDtl/{{ article.pk }}/">{{ article.title }}</a> </b>  </h4>
+                    <p style="color: gray"> {{ article.desc }} </p>
+
+                    <div class="littletag">
+
+                         <p  >
+                             <span class="time">{{ article.create_date|date:'H:m  Y-m-d' }}
+                             </span> <span class="glyphicon glyphicon-comment"> 评论（{{ article.comment_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-thumbs-up"> 点赞（{{ article.up_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-thumbs-down"> 踩（{{ article.down_count }}）</span>
+                             </span> <span class="glyphicon glyphicon-eye-open"> 阅读数（{{ article.see_count }}）</span>
+
+                         </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+</body>
+</html>
